@@ -39,6 +39,7 @@ func MigrateTables() error {
 	err := Conn.AutoMigrate(
 		&model.Doktor{},
 		&model.Randevu{},
+		&model.DoktorRandevu{},
 	)
 	if err != nil {
 		return err

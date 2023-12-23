@@ -86,6 +86,7 @@ func RandevuOluştur(c *fiber.Ctx) error {
 
 		return c.Status(200).JSON(fiber.Map{"success": "Randevu başariyla oluşturuldu."})
 	} else {
+		// The doctor is not available
 		return c.Status(400).JSON(fiber.Map{"error": "Doktor müsait değil."})
 	}
 }
@@ -99,19 +100,20 @@ func DoktorKontrol(DoktorIsim string, DoktorSoyisim string) (*[]model.Doktor, er
 }
 
 func DoktorRandevulari(doktor *model.Doktor, tarih int) bool {
-	var müsaitlik bool
+	müsaitlik := true
+
 	if err := database.Conn.Preload("Randevular").Find(&doktor).Error; err != nil {
 		fmt.Println("Doktor randevulari alinamadi:", err)
 		return false
 	}
+
 	for _, randevu := range doktor.Randevular {
 		if randevu.RandevuTarihi == tarih {
 			müsaitlik = false
 			break
-		} else {
-			müsaitlik = true
 		}
 	}
+
 	return müsaitlik
 }
 
