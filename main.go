@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"hastane-uyg/core/database"
+	"hastane-uyg/router"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -37,6 +38,6 @@ func main() {
 	app.Use(logger.New(logger.Config{
 		Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
 	}))
-
+	router.Router(app)
 	app.Listen(":8080")
 }

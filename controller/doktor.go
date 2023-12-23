@@ -22,21 +22,21 @@ func DoktorEkle(c *fiber.Ctx) error {
 
 	var existingDoktor model.Doktor
 	if err := database.Conn.Where("isim = ? AND soyisim = ?", DoktorBilgi.Isim, DoktorBilgi.Soyisim).First(&existingDoktor).Error; err != nil {
-		return c.Status(400).JSON(fiber.Map{"doktor_error": "Doktor mevcut"})
+		response := model.Doktor{
+			Isim:     DoktorBilgi.Isim,
+			Soyisim:  DoktorBilgi.Soyisim,
+			Hastane:  DoktorBilgi.Hastane,
+			Uzmanlik: DoktorBilgi.Uzmanlik,
+		}
+
+		if err := database.Conn.Create(&response).Error; err != nil {
+			return c.Status(500).JSON(fiber.Map{"doktor_error": "Doktor eklemede bir problem yaşandı"})
+		}
+
+		return c.Status(200).JSON(fiber.Map{"message": "Doktor başarıyla eklendi"})
 	}
 
-	response := model.Doktor{
-		Isim:     DoktorBilgi.Isim,
-		Soyisim:  DoktorBilgi.Soyisim,
-		Hastane:  DoktorBilgi.Hastane,
-		Uzmanlik: DoktorBilgi.Uzmanlik,
-	}
-
-	if err := database.Conn.Create(response).Error; err != nil {
-		return c.Status(500).JSON(fiber.Map{"doktor_error": "Doktor eklemede bir problem yaşandi"})
-	}
-
-	return c.Status(200).JSON(fiber.Map{"message": "Doktor başariyla eklendi"})
+	return c.Status(400).JSON(fiber.Map{"doktor_error": "Doktor mevcut"})
 }
 
 func DoktorListe(c *fiber.Ctx) error {

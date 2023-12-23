@@ -21,9 +21,9 @@ func Router(app *fiber.App) {
 
 	doktor := app.Group("/doktor")
 	doktor.Post("ekle", controller.DoktorEkle)
-	doktor.Post("güncelle", controller.DoktorGüncelle)
+	doktor.Post("guncelle", controller.DoktorGüncelle)
 	doktor.Get("liste", controller.DoktorListe)
-	doktor.Post("sil", controller.DoktorSil)
+	doktor.Delete("sil", controller.DoktorSil)
 
 	randevu := app.Group("/randevu")
 	randevu.Post("ekle", controller.RandevuOluştur)
