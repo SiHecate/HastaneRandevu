@@ -168,8 +168,33 @@ func DoktorListesi(c *fiber.Ctx) error {
 func HastaRandevuListesi(c *fiber.Ctx) error {
 	var RandevuKontrol struct {
 		HastaIsim    string `json:"hasta_isim"`
-		HastaSoyisim string `json"hasta_soyisim"`
+		HastaSoyisim string `json:"hasta_soyisim"`
 	}
+
+	if err := c.BodyParser(&RandevuKontrol); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid request data: " + err.Error()})
+	}
+
+	var Randevular []model.Randevu
+	if err := database.Conn.Where("hasta_isim = ? AND hasta_soyisim = ?", RandevuKontrol.HastaIsim, RandevuKontrol.HastaSoyisim).
+		Find(&Randevular).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Database error: " + err.Error()})
+	}
+
+	// Assuming Randevu struct has Tarih, RandevuBolum, and HastaRahatsizlik fields
+	var response []fiber.Map
+	for _, randevu := range Randevular {
+		item := fiber.Map{
+			"hasta_isim":        RandevuKontrol.HastaIsim,
+			"hasta_soyisim":     RandevuKontrol.HastaSoyisim,
+			"tarih":             randevu.Tarih,
+			"randevu_bolum":     randevu.RandevuBölüm,
+			"hasta_rahatsizlik": randevu.HastaRahatsizlik,
+		}
+		response = append(response, item)
+	}
+
+	return c.JSON(response)
 }
 
 func DoktorRandevuListesi(c *fiber.Ctx) error {
@@ -177,4 +202,29 @@ func DoktorRandevuListesi(c *fiber.Ctx) error {
 		DoktorIsim    string `json:"doktor_isim"`
 		DoktorSoyisim string `json:"doktor_soyisim"`
 	}
+
+	if err := c.BodyParser(&RandevuKontrol); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid request data: " + err.Error()})
+	}
+
+	var Randevular []model.Randevu
+	if err := database.Conn.Where("doktor_isim = ? AND doktor_soyisim = ?", RandevuKontrol.DoktorIsim, RandevuKontrol.DoktorSoyisim).
+		Find(&Randevular).Error; err != nil {
+		return c.Status(500).JSON(fiber.Map{"error": "Database error: " + err.Error()})
+	}
+
+	var response []fiber.Map
+	for _, randevu := range Randevular {
+		item := fiber.Map{
+			"doktor_isim":       RandevuKontrol.DoktorIsim,
+			"doktor_soyisim":    RandevuKontrol.DoktorSoyisim,
+			"hasta_isim":        randevu.HastaIsim,
+			"hasta_soyisim":     randevu.HastaSoyisim,
+			"tarih":             randevu.Tarih,
+			"hasta_rahatsizlik": randevu.HastaRahatsizlik,
+		}
+		response = append(response, item)
+	}
+
+	return c.JSON(response)
 }
