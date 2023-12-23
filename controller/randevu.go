@@ -2,7 +2,8 @@ package controller
 
 import (
 	"fmt"
-	"hastane-uyg/model"
+
+	model "hastane-uyg/Model"
 
 	"hastane-uyg/core/database"
 
@@ -122,4 +123,58 @@ func DoktorID(doktor *model.Doktor, doktorIsim string, doktorSoyisim string) int
 		return 0
 	}
 	return int(doktor.ID)
+}
+
+/*
+	Randevu oluşturma tamamlandı şu an hem randevu tablosuna hemde doktorlara ait olan randevu tablosuna verileri gönderiliyor
+	ToDo:
+		Bütün hastaları lisleyecek endpoint BİTTİ
+		Bütün doktorları lisleyecek endpoint
+		Hastaların sahip olduğu randevuları listleyecek endpoint
+		Doktorların sahip olduğu randevuları listleyecek endpoint
+*/
+
+// Admin paneli kısmında gözükecek olan kısım Get methodu
+func HastaListesi(c *fiber.Ctx) error {
+	var randevular []model.Randevu
+
+	hastaIsim := c.Query("hasta_isim")
+	hastaSoyisim := c.Query("hasta_soyisim")
+	randevuBolum := c.Query("randevu_bolum")
+
+	database.Conn.Where("hasta_isim = ? AND hasta_soyisim = ? AND randevu_bolum = ?",
+		hastaIsim, hastaSoyisim, randevuBolum).
+		Find(&randevular)
+
+	return c.JSON(randevular)
+}
+
+// Admin paneli kısmında gözükecek olan kısım Get methodu
+func DoktorListesi(c *fiber.Ctx) error {
+	var doktorlar []model.Doktor
+
+	doktorIsim := c.Query("isim")
+	doktorSoyisim := c.Query("soyisim")
+	doktorUzmanlik := c.Query("uzmanlik")
+	doktorHastane := c.Query("hastane")
+
+	database.Conn.Where("isim = ? AND soyisim = ? AND uzmanlik = ? AND hastane = ?",
+		doktorIsim, doktorSoyisim, doktorUzmanlik, doktorHastane).
+		Find(&doktorlar)
+
+	return c.JSON(&doktorlar)
+}
+
+func HastaRandevuListesi(c *fiber.Ctx) error {
+	var RandevuKontrol struct {
+		HastaIsim    string `json:"hasta_isim"`
+		HastaSoyisim string `json"hasta_soyisim"`
+	}
+}
+
+func DoktorRandevuListesi(c *fiber.Ctx) error {
+	var RandevuKontrol struct {
+		DoktorIsim    string `json:"doktor_isim"`
+		DoktorSoyisim string `json:"doktor_soyisim"`
+	}
 }
