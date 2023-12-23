@@ -139,31 +139,14 @@ func DoktorID(doktor *model.Doktor, doktorIsim string, doktorSoyisim string) int
 // Admin paneli kısmında gözükecek olan kısım Get methodu
 func HastaListesi(c *fiber.Ctx) error {
 	var randevular []model.Randevu
-
-	hastaIsim := c.Query("hasta_isim")
-	hastaSoyisim := c.Query("hasta_soyisim")
-	randevuBolum := c.Query("randevu_bolum")
-
-	database.Conn.Where("hasta_isim = ? AND hasta_soyisim = ? AND randevu_bolum = ?",
-		hastaIsim, hastaSoyisim, randevuBolum).
-		Find(&randevular)
-
+	database.Conn.Find(&randevular)
 	return c.JSON(randevular)
 }
 
 // Admin paneli kısmında gözükecek olan kısım Get methodu
 func DoktorListesi(c *fiber.Ctx) error {
 	var doktorlar []model.Doktor
-
-	doktorIsim := c.Query("isim")
-	doktorSoyisim := c.Query("soyisim")
-	doktorUzmanlik := c.Query("uzmanlik")
-	doktorHastane := c.Query("hastane")
-
-	database.Conn.Where("isim = ? AND soyisim = ? AND uzmanlik = ? AND hastane = ?",
-		doktorIsim, doktorSoyisim, doktorUzmanlik, doktorHastane).
-		Find(&doktorlar)
-
+	database.Conn.Find(&doktorlar)
 	return c.JSON(&doktorlar)
 }
 
@@ -187,11 +170,12 @@ func HastaRandevuListesi(c *fiber.Ctx) error {
 	var response []fiber.Map
 	for _, randevu := range Randevular {
 		item := fiber.Map{
-			"hasta_isim":        RandevuKontrol.HastaIsim,
-			"hasta_soyisim":     RandevuKontrol.HastaSoyisim,
-			"tarih":             randevu.Tarih,
-			"randevu_bolum":     randevu.RandevuBölüm,
-			"hasta_rahatsizlik": randevu.HastaRahatsizlik,
+			"hasta_isim":     RandevuKontrol.HastaIsim,
+			"hasta_soyisim":  RandevuKontrol.HastaSoyisim,
+			"tarih":          randevu.Tarih,
+			"randevu_bolum":  randevu.RandevuBölüm,
+			"doktor_isim":    randevu.DoktorIsim,
+			"doktor_soyisim": randevu.DoktorSoyisim,
 		}
 		response = append(response, item)
 	}
