@@ -52,7 +52,6 @@ func DoktorListe(c *fiber.Ctx) error {
 	if err := database.Conn.Find(&existingDoktors).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"doktor_error": "Doktor listeleme işleminde bir hata oluştu"})
 	}
-
 	return c.Status(200).JSON(fiber.Map{"message": "Listedeki bütün doktorlar", "data": existingDoktors})
 }
 

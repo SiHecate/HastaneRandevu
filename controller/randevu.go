@@ -189,32 +189,25 @@ func HastaRandevuListesi(c *fiber.Ctx) error {
 }
 
 func DoktorRandevuListesi(c *fiber.Ctx) error {
-	var RandevuKontrol struct {
-		DoktorIsim    string `json:"doktor_isim"`
-		DoktorSoyisim string `json:"doktor_soyisim"`
-	}
-
-	if err := c.BodyParser(&RandevuKontrol); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid request data: " + err.Error()})
-	}
-
-	var Randevular []model.Randevu
-	if err := database.Conn.Where("doktor_isim = ? AND doktor_soyisim = ?", RandevuKontrol.DoktorIsim, RandevuKontrol.DoktorSoyisim).
-		Find(&Randevular).Error; err != nil {
+	var Doktor []model.Doktor
+	if err := database.Conn.Preload("Randevular").Find(&Doktor).Error; err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Database error: " + err.Error()})
 	}
 
 	var response []fiber.Map
-	for _, randevu := range Randevular {
-		item := fiber.Map{
-			"doktor_isim":       RandevuKontrol.DoktorIsim,
-			"doktor_soyisim":    RandevuKontrol.DoktorSoyisim,
-			"hasta_isim":        randevu.HastaIsim,
-			"hasta_soyisim":     randevu.HastaSoyisim,
-			"tarih":             randevu.Tarih,
-			"hasta_rahatsizlik": randevu.HastaRahatsizlik,
+	for _, doktor := range Doktor {
+		for _, randevu := range doktor.Randevular {
+			item := fiber.Map{
+				"doktor_isim":    doktor.Isim,
+				"doktor_soyisim": doktor.Soyisim,
+				"randevular": fiber.Map{
+					"hasta_ismi":    randevu.RandevuHastaIsmi,
+					"hasta_soyismi": randevu.RandevuHastaSoyismi,
+					"tarih":         randevu.RandevuTarihi,
+				},
+			}
+			response = append(response, item)
 		}
-		response = append(response, item)
 	}
 
 	return c.JSON(response)
