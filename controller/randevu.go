@@ -144,14 +144,12 @@ func DoktorID(doktor *model.Doktor, doktorIsim string, doktorSoyisim string) int
 		Doktorların sahip olduğu randevuları listleyecek endpoint
 */
 
-// Admin paneli kısmında gözükecek olan kısım Get methodu
 func HastaListesi(c *fiber.Ctx) error {
 	var randevular []model.Randevu
 	database.Conn.Find(&randevular)
 	return c.JSON(randevular)
 }
 
-// Admin paneli kısmında gözükecek olan kısım Get methodu
 func DoktorListesi(c *fiber.Ctx) error {
 	var doktorlar []model.Doktor
 	database.Conn.Find(&doktorlar)
@@ -174,7 +172,6 @@ func HastaRandevuListesi(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Database error: " + err.Error()})
 	}
 
-	// Assuming Randevu struct has Tarih, RandevuBolum, and HastaRahatsizlik fields
 	var response []fiber.Map
 	for _, randevu := range Randevular {
 		item := fiber.Map{

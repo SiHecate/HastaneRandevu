@@ -22,15 +22,14 @@ import (
 /*
 	/
 	ToDo:
-	Doktor randevu alma
-	Randevu bilgileri (tarih - doktor adı - muayene türü vb...)
-	Hasta ekleme (randevu sistem içerisinde olacak ekstra düşünmeye gerek olduğunu düşünmüyorum okul projesi olduğu için)
-	Hastaların önceden aldığı randevuların geçmişi
+	Doktor randevu alma BİTTİ
+	Randevu bilgileri (tarih - doktor adı - muayene türü vb...) BİTTİ
+	Hasta ekleme BİTTİ
+	Hastaların önceden aldığı randevuların geçmişi BİTTİ
 
-	Mümkünse bu gece bitir yarın bu konu hakkında konuş
 	Proje bittiğinde
-	Postman üzerinden front tarafına document ekle
-	Git'e at ve api'yı nasıl live'a çekebileceği araştır
+	Postman üzerinden front tarafına document ekle BİTTİ
+	Git'e at ve api'yı nasıl live'a çekebileceği araştır BİTTİ
 
 */
 
