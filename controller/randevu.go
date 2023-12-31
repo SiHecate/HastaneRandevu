@@ -2,7 +2,9 @@
 --------------------------------------------------------------------------
 
 	Denizli Meslek Yüksek Okulu Bilgisayar Programcılığı
-	2. Sınıf öğrencisi Umutcan Biler'in Sistem Analizi dönem sonu projesi
+	2. Sınıf öğrencileri
+	Umutcan Biler ve Muhammet Yasin Seden'nin
+	Sistem Analizi ve Tasarımı dönem sonu projesi
 
 --------------------------------------------------------------------------
 */
@@ -18,33 +20,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-/*
-	ToDo:
-		İlk olarak randevu alma sistemi geliştirilecek:
-			- Randevuyu alacak hastanın adı ve soyadı alınacak
-			- Randevu alınacak hastanenin adı alınacak
-			- Randevu alınacak doktorun ismi alınacak ve girilen hastanenin içerisinde bu doktorun olup olmadığı kontrol edilecek ve buna göre listelenecek doktorlar
-			- Randevu alınan doktor'un dolu olduğu saatler ayarlanacak. Bu ayarlamayı SQL üzerinden halletmeyi planıyorum
-				-- Bu saat kontrolünü galiba her doktorun altına bir tablo daha açarak müsait olduğu saatleri tutarak gidereceğim.
-			- Eğer randevu alma işleminde herhangi bir sıkıntı olmazsa her doktorun altında bu randevu görülecek ve işlemleri olacak
-			- Hastanın adına soy adına göre de bir fonksiyon yardımıyla randevularını gösterilecek
-			- Randevu iptal (delete), düzenleme(update) işlemleri eklenecek
-				-- Bu sayede CRUD işlemlerinin hepsi hallolucak
-					--- Create = Randevu oluşturma
-					--- Read   = Randevu listeleme
-					--- Update = Randevu düzenleme
-					--- Delete = Randevu iptali
-		ANA BAŞLIKLAR BU KADAR.
-*/
-
 func RandevuOluştur(c *fiber.Ctx) error {
 	var RandevuBilgi struct {
-		Tarih            int    `json:"tarih"`
+		Tarih            string `json:"tarih"`
 		HastaIsim        string `json:"hasta_isim"`
 		HastaSoyisim     string `json:"hasta_soyisim"`
 		DoktorIsim       string `json:"doktor_isim"`
 		DoktorSoyisim    string `json:"doktor_soyisim"`
-		RandevuBölüm     string `json:"randevu_bölüm"`
 		HastaRahatsizlik string `json:"hasta_rahatsizlik"`
 	}
 
@@ -75,7 +57,6 @@ func RandevuOluştur(c *fiber.Ctx) error {
 			HastaSoyisim:     RandevuBilgi.HastaSoyisim,
 			DoktorIsim:       RandevuBilgi.DoktorIsim,
 			DoktorSoyisim:    RandevuBilgi.DoktorSoyisim,
-			RandevuBölüm:     RandevuBilgi.RandevuBölüm,
 			HastaRahatsizlik: RandevuBilgi.HastaRahatsizlik,
 		}
 		if err := database.Conn.Create(&randevuResponse).Error; err != nil {
@@ -94,7 +75,6 @@ func RandevuOluştur(c *fiber.Ctx) error {
 
 		return c.Status(200).JSON(fiber.Map{"success": "Randevu başariyla oluşturuldu."})
 	} else {
-		// The doctor is not available
 		return c.Status(400).JSON(fiber.Map{"error": "Doktor müsait değil."})
 	}
 }
@@ -107,7 +87,7 @@ func DoktorKontrol(DoktorIsim string, DoktorSoyisim string) (*[]model.Doktor, er
 	return &existingDoktors, nil
 }
 
-func DoktorRandevulari(doktor *model.Doktor, tarih int) bool {
+func DoktorRandevulari(doktor *model.Doktor, tarih string) bool {
 	müsaitlik := true
 
 	if err := database.Conn.Preload("Randevular").Find(&doktor).Error; err != nil {
@@ -134,15 +114,6 @@ func DoktorID(doktor *model.Doktor, doktorIsim string, doktorSoyisim string) int
 	}
 	return int(doktor.ID)
 }
-
-/*
-	Randevu oluşturma tamamlandı şu an hem randevu tablosuna hemde doktorlara ait olan randevu tablosuna verileri gönderiliyor
-	ToDo:
-		Bütün hastaları lisleyecek endpoint BİTTİ
-		Bütün doktorları lisleyecek endpoint
-		Hastaların sahip olduğu randevuları listleyecek endpoint
-		Doktorların sahip olduğu randevuları listleyecek endpoint
-*/
 
 func HastaListesi(c *fiber.Ctx) error {
 	var randevular []model.Randevu

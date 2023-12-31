@@ -2,7 +2,9 @@
 --------------------------------------------------------------------------
 
 	Denizli Meslek Yüksek Okulu Bilgisayar Programcılığı
-	2. Sınıf öğrencisi Umutcan Biler'in Sistem Analizi dönem sonu projesi
+	2. Sınıf öğrencileri
+	Umutcan Biler ve Muhammet Yasin Seden'nin
+	Sistem Analizi ve Tasarımı dönem sonu projesi
 
 --------------------------------------------------------------------------
 */
@@ -18,20 +20,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/joho/godotenv"
 )
-
-/*
-	/
-	ToDo:
-	Doktor randevu alma BİTTİ
-	Randevu bilgileri (tarih - doktor adı - muayene türü vb...) BİTTİ
-	Hasta ekleme BİTTİ
-	Hastaların önceden aldığı randevuların geçmişi BİTTİ
-
-	Proje bittiğinde
-	Postman üzerinden front tarafına document ekle BİTTİ
-	Git'e at ve api'yı nasıl live'a çekebileceği araştır BİTTİ
-
-*/
 
 func main() {
 	if err := godotenv.Load(); err != nil {

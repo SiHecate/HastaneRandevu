@@ -2,7 +2,9 @@
 --------------------------------------------------------------------------
 
 	Denizli Meslek Yüksek Okulu Bilgisayar Programcılığı
-	2. Sınıf öğrencisi Umutcan Biler'in Sistem Analizi dönem sonu projesi
+	2. Sınıf öğrencileri
+	Umutcan Biler ve Muhammet Yasin Seden'nin
+	Sistem Analizi ve Tasarımı dönem sonu projesi
 
 --------------------------------------------------------------------------
 */

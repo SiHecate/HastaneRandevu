@@ -1,6 +1,18 @@
+/*
+--------------------------------------------------------------------------
+
+	Denizli Meslek Yüksek Okulu Bilgisayar Programcılığı
+	2. Sınıf öğrencileri
+	Umutcan Biler ve Muhammet Yasin Seden'nin
+	Sistem Analizi ve Tasarımı dönem sonu projesi
+
+--------------------------------------------------------------------------
+*/
 package model
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Doktor struct {
 	gorm.Model
@@ -14,7 +26,7 @@ type Doktor struct {
 type DoktorRandevu struct {
 	gorm.Model
 	DoktorID            uint
-	RandevuTarihi       int
+	RandevuTarihi       string
 	RandevuHastaIsmi    string
 	RandevuHastaSoyismi string
 }
